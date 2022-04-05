@@ -3,10 +3,11 @@
 #include <math.h>
 #include <windows.h>
 #include <ctype.h>
-using namespace std;	
+using namespace std;
+HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);	
 bool first;
 string whof="B";
-string chess[10][10]={{"RR","  ","  ","RP","  ","  ","BP","  ","  ","BR"},
+string inichess[10][10]={{"RR","  ","  ","RP","  ","  ","BP","  ","  ","BR"},
                   {"RT","  ","RC","  ","  ","  ","  ","BC","  ","BT"},
                   {"RM","  ","  ","RP","  ","  ","BP","  ","  ","BM"},
                   {"RG","  ","  ","  ","  ","  ","  ","  ","  ","BG"},
@@ -16,12 +17,27 @@ string chess[10][10]={{"RR","  ","  ","RP","  ","  ","BP","  ","  ","BR"},
                   {"RT","  ","RC","  ","  ","  ","  ","BC","  ","BT"},
                   {"RR","  ","  ","RP","  ","  ","BP","  ","  ","BR"}
                   };
+string chess[10][10];
+void rechess()
+{
+	for(int i=0; i<10; i++){
+		for(int j=0; j<10; j++){
+			chess[i][j] = inichess[i][j];
+		}
+	}
+}
 int printchess(bool a){
 	cout<<"          1  2  3  4  5  6  7  8  9 \n         ___________________________\n";
 	for(int i=0;i<10;i++){
 		cout<<i+1<<"\t| ";
 		for(int j=0;j<9;j++)
+		{
+			if(chess[j][abs(a*9-i)].find("R") == 0)
+				SetConsoleTextAttribute(h, 12);
+			else	SetConsoleTextAttribute(h, 15);
 			cout<<chess[j][abs(a*9-i)]<<" ";
+			SetConsoleTextAttribute(h, 15);
+		}
 		cout<<"\n";
 	}           
 }    
@@ -31,18 +47,24 @@ int predictwin(int ,int ,string );
 int RK1=4,RK2,BK1=4,BK2; 
 int main()
 {
-	start : 
 	system("cls");
+	cout<<"		Ready Player One	";
+	Sleep(1400);
+	start : 
+	rechess();
 	string a,b,c;
 	int x1,y1,x2,y2;
 	bool Start=1;
+	system("cls");
 	cout<<"Red or Black?\n";
 	cin>>a;
 	if(a=="Red"){
+		whof = "B";
 		cout<<"You First!\n\n";
 		first=1;
 	}
 	else if(a=="Black"){
+		whof = "B";
 		cout<<"You enemy First!\n\n";
 		first=0;
 	}
@@ -75,7 +97,24 @@ int main()
 			}
 			cout<<endl;
 			printchess(first);
-			return 0;
+			//return 0;
+			Sleep(700);
+			int playmode = 0;
+			cout<<"\nPlay again/Leave game ? (Input : 1/0)\n";
+			cin>>playmode;
+			if(playmode)
+			{
+				Sleep(700);
+				goto start;
+			}
+			else
+			{
+				cout<<"\n		Thanks for playing my game.		\n";
+				Sleep(500);
+				cout<<"\n		Remember you are the BEST.\n";
+				Sleep(700);
+				return(0);
+			}
 		}
 		if(predictprewin(x1-1,abs(y1-1-first*9),RK1,RK2,BK1,BK2,"RK","BK",a)) 
 			cout<<"Check\n";
